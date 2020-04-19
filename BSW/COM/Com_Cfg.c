@@ -13,7 +13,7 @@
 #include "Com_Cfg.h"
 
 /* WARNING : There is a restriction in the main function Algorithm
-        All of the signal bits have to be allocated in the same byte */
+        A signal size must not exceed 1 Byte */
 
 const PduInfoType PduInfo[COM_NUMBER_OF_PDUS] = {
         /*      id           direction           nSignal            signal[]              signalStart[]          signalWidth[]                  trig                     triggerData            */

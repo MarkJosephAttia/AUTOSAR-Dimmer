@@ -205,7 +205,7 @@ extern Std_ReturnType Rte_Write_DoorContactStatus(uint8_t status)
 Std_ReturnType Rte_Call_DoorContactSendData(void)
 {
     Std_ReturnType error;
-    error = Com_SendSignal(DOOR_STATE_SIGNAL, Rte_doorContactStatus);
+    error = Com_SendSignal(DOOR_STATE_SIGNAL, (const void*)&Rte_doorContactStatus);
     return error;
 }
 
@@ -221,7 +221,7 @@ Std_ReturnType Rte_Call_DoorContactSendData(void)
 Std_ReturnType Rte_Call_DimmerReceiveData(void)
 {
     Std_ReturnType error;
-    error = Com_ReceiveSignal(DOOR_STATE_SIGNAL, &Rte_doorContactStatus);;
+    error = Com_ReceiveSignal(DOOR_STATE_SIGNAL, (void*)&Rte_doorContactStatus);;
     return error;
 }
 

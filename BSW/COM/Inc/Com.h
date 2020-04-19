@@ -26,7 +26,7 @@ typedef uint16_t PduIdType;
 typedef uint8_t PduTriggerType;
 
 /* WARNING : There is a restriction in the main function Algorithm
-        All of the signal bits have to be allocated in the same byte */
+			A signal size must not exceed 1 Byte */
 
 typedef struct 
 {
@@ -60,7 +60,7 @@ extern Std_ReturnType Com_Init(void);
  *                  E_OK
  *                  E_NOT_OK
  */
-extern Std_ReturnType Com_SendSignal(SignalIdType signalId, uint32_t data);
+extern Std_ReturnType Com_SendSignal(SignalIdType signalId, const void* data);
 
 /**
  * @brief Receives a signal
@@ -72,7 +72,7 @@ extern Std_ReturnType Com_SendSignal(SignalIdType signalId, uint32_t data);
  *                  E_OK
  *                  E_NOT_OK
  */
-extern Std_ReturnType Com_ReceiveSignal(SignalIdType signalId, uint32_t* data);
+extern Std_ReturnType Com_ReceiveSignal(SignalIdType signalId, void* data);
 
 /**
  * @brief Triggers The Transmission
