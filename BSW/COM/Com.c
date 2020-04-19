@@ -133,16 +133,16 @@ static void Com_MainFunctionTx(void)
 				{
 					Com_Pdu[pduItr].data[byteItr]=0;
 				}
-                Com_Pdu[pduItr].data[COM_PDU_START/8] |= 
-                                Com_Pdu[pduItr].pduInf->id<<(COM_PDU_START & 0x0F);
+                Com_Pdu[pduItr].data[COM_PDU_START>>3] |= 
+                                Com_Pdu[pduItr].pduInf->id<<(COM_PDU_START & 0x07);
                 for(signalItr = 0; signalItr<Com_Pdu[pduItr].pduInf->nSignals; signalItr++)
                 {
                     /* The Byte Number |= signal << signalStart % 8 */
-                    Com_Pdu[pduItr].data[Com_Pdu[pduItr].pduInf->signalStart[signalItr]/8] |= 
-                                Com_Signal[Com_Pdu[pduItr].pduInf->signal[signalItr]]<<(Com_Pdu[pduItr].pduInf->signalStart[signalItr] & 0x0F);
+                    Com_Pdu[pduItr].data[Com_Pdu[pduItr].pduInf->signalStart[signalItr]>>3] |= 
+                                Com_Signal[Com_Pdu[pduItr].pduInf->signal[signalItr]]<<(Com_Pdu[pduItr].pduInf->signalStart[signalItr] & 0x07);
 					/* To Transfer the bits shifted to the next byte */
-					Com_Pdu[pduItr].data[(Com_Pdu[pduItr].pduInf->signalStart[signalItr]/8) + 1] |=
-						Com_Signal[Com_Pdu[pduItr].pduInf->signal[signalItr]]>>(8-(Com_Pdu[pduItr].pduInf->signalStart[signalItr] & 0x0F));
+					Com_Pdu[pduItr].data[(Com_Pdu[pduItr].pduInf->signalStart[signalItr]>>3) + 1] |=
+						Com_Signal[Com_Pdu[pduItr].pduInf->signal[signalItr]]>>(8-(Com_Pdu[pduItr].pduInf->signalStart[signalItr] & 0x07));
                 }
                 Com_Pdu[pduItr].trig = COM_PDU_NOT_TRIGGERED;
                 Uart_Send(Com_Pdu[pduItr].data, COM_PDU_SIZE_IN_BYTES);
@@ -153,17 +153,17 @@ static void Com_MainFunctionTx(void)
 				{
 					Com_Pdu[pduItr].data[byteItr]=0;
 				}
-                Com_Pdu[pduItr].data[COM_PDU_START/8] |=
-                                Com_Pdu[pduItr].pduInf->id<<(COM_PDU_START & 0x0F);
+                Com_Pdu[pduItr].data[COM_PDU_START>>3] |=
+                                Com_Pdu[pduItr].pduInf->id<<(COM_PDU_START & 0x07);
                 for(signalItr = 0; signalItr<Com_Pdu[pduItr].pduInf->nSignals; signalItr++)
                 {
                     /* The Byte Number |= signal << signalStart % 8 */
-                    Com_Pdu[pduItr].data[Com_Pdu[pduItr].pduInf->signalStart[signalItr]/8] |= 
-                                Com_Signal[Com_Pdu[pduItr].pduInf->signal[signalItr]]<<(Com_Pdu[pduItr].pduInf->signalStart[signalItr] & 0x0F);
+                    Com_Pdu[pduItr].data[Com_Pdu[pduItr].pduInf->signalStart[signalItr]>>3] |= 
+                                Com_Signal[Com_Pdu[pduItr].pduInf->signal[signalItr]]<<(Com_Pdu[pduItr].pduInf->signalStart[signalItr] & 0x07);
 								
 					/* To Transfer the bits shifted to the next byte */
-					Com_Pdu[pduItr].data[(Com_Pdu[pduItr].pduInf->signalStart[signalItr]/8) + 1] |=
-					Com_Signal[Com_Pdu[pduItr].pduInf->signal[signalItr]]>>(8-(Com_Pdu[pduItr].pduInf->signalStart[signalItr] & 0x0F));
+					Com_Pdu[pduItr].data[(Com_Pdu[pduItr].pduInf->signalStart[signalItr]>>3) + 1] |=
+					Com_Signal[Com_Pdu[pduItr].pduInf->signal[signalItr]]>>(8-(Com_Pdu[pduItr].pduInf->signalStart[signalItr] & 0x07));
                 }
                 Com_Pdu[pduItr].remainingTicks = Com_Pdu[pduItr].periodicTicks;
                 Uart_Send(Com_Pdu[pduItr].data, COM_PDU_SIZE_IN_BYTES);
@@ -194,7 +194,7 @@ static void Com_MainFunctionRx(void)
                 {
                     /* Signal = data[start/8] >> signalStart % 8 */
                     Com_Signal[Com_Pdu[pduItr].pduInf->signal[signalItr]] = 
-                                (uint16_t)Com_Pdu[pduItr].data[Com_Pdu[pduItr].pduInf->signalStart[signalItr]/8] >> (Com_Pdu[pduItr].pduInf->signalStart[signalItr] & 0x0F);
+                                (uint16_t)Com_Pdu[pduItr].data[Com_Pdu[pduItr].pduInf->signalStart[signalItr]>>3] >> (Com_Pdu[pduItr].pduInf->signalStart[signalItr] & 0x07);
                     Com_Signal[Com_Pdu[pduItr].pduInf->signal[signalItr]] &= Com_ByteMasks[Com_Pdu[pduItr].pduInf->signalWidth[signalItr]-1];
                 }
                 Com_Pdu[pduItr].trig = COM_PDU_NOT_TRIGGERED;
@@ -206,7 +206,7 @@ static void Com_MainFunctionRx(void)
                 {
                     /* Signal = data[start/8] >> signalStart % 8 */
                     Com_Signal[Com_Pdu[pduItr].pduInf->signal[signalItr]] = 
-                                (uint16_t)Com_Pdu[pduItr].data[Com_Pdu[pduItr].pduInf->signalStart[signalItr]/8] >> (Com_Pdu[pduItr].pduInf->signalStart[signalItr] & 0x0F);
+                                (uint16_t)Com_Pdu[pduItr].data[Com_Pdu[pduItr].pduInf->signalStart[signalItr]>>3] >> (Com_Pdu[pduItr].pduInf->signalStart[signalItr] & 0x07);
                     Com_Signal[Com_Pdu[pduItr].pduInf->signal[signalItr]] &= Com_ByteMasks[Com_Pdu[pduItr].pduInf->signalWidth[signalItr]-1];
                 }
                 Com_Pdu[pduItr].remainingTicks = Com_Pdu[pduItr].periodicTicks;
